@@ -1,0 +1,164 @@
+/*
+ * This program demonstrates the use of arrays and reading and appending to files
+ */
+package cs1180_lab07_aladimi;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Scanner;
+
+/**
+ *@author Nadia Aladimi
+ */
+public class CS1180_Lab07_Aladimi {
+
+   
+    public static void main(String[] args) throws FileNotFoundException, IOException {
+        // prints out the array 
+        int array[] = {-3, -1, 5, 10, 3, 17, 2};
+        printArray(array);
+        int indexMax = maxAndMinArray(array);
+        //subtracts the maximum amount of the array 
+        int array2[] = new int[array.length - 1];
+        int x = 0;
+        for (int i = 0; i < array.length; i++) {
+            if (i != indexMax) {
+                array2[x] = array[i];
+                x++;
+            }
+        }
+        //reads the array stored in the file and appends to the file the maximum amount and the array in a different format ("[0:1,..]")
+        int array3[] = (fileRead());
+        printArray(array2);
+        printArray(fileRead());
+        int indexMax2 = maxAndMinArray(array3);
+        int array4[] = new int[array3.length - 1];
+        int y = 0;
+        for (int i = 0; i < array3.length; i++) {
+            if (i != indexMax2) {
+                array4[y] = array3[i];
+                y++;
+            }
+        }
+        fileWrite(array4, array3, indexMax2);
+
+    }
+    /**
+     * prints the array to the console in the specified format from the lab description
+     * @param array 
+     */
+
+    public static void printArray(int array[]) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[ ");
+        for (int i = 0; i < array.length; i++) {
+            if (i == array.length - 1) {
+                sb.append(i + ":");
+                sb.append(array[i] + " ");
+            } else {
+                sb.append(i + ":");
+                sb.append(array[i] + ", ");
+            }
+        }
+        sb.append("]");
+        System.out.println(sb);
+    }
+    /**
+     * finds the maximum value and minimum value of the array as well as their indexes
+     * outputs those values to the console
+     * @param array
+     * @return indexMax
+     */
+
+    public static int maxAndMinArray(int array[]) {
+        int max = 0;
+        int indexMax = 0;
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] > max) {
+                max = array[i];
+                indexMax = i;
+            }
+        }
+        int min = 0;
+        int indexMin = 0;
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] < min) {
+                min = array[i];
+                indexMin = i;
+            }
+
+        }
+        System.out.println("Maximum value " + max + " found at index " + indexMax);
+        System.out.println("Minimum vale " + min + " found at index " + indexMin);
+        return indexMax;
+    }
+    /**
+     * method reads from the file and stores the integers from the file into an array
+     * @return array3
+     * @return null
+     */
+
+    public static int[] fileRead() {
+
+        try {
+            File arrayFile = new File("numberList_test01.txt");
+            Scanner file_read = new Scanner(arrayFile);
+            Scanner count_indexes = new Scanner(arrayFile);
+            int x = 0;
+            if (!file_read.hasNext()) {
+                System.out.println("File is empty");
+                System.exit(0);
+            }
+            while (count_indexes.hasNextInt()) {
+                count_indexes.nextInt();
+                x++;
+            }
+            int array3[] = new int[x];
+            while (file_read.hasNext()) {
+                for (int i = 0; i < array3.length; i++) {
+                    array3[i] = file_read.nextInt();
+                }
+            }
+            return array3;
+        } catch (Exception e) {
+
+        }
+        return null;
+    }
+    /**
+     * writes to the file 
+     * appends the maximum value and the different format of the array
+     * @param array4
+     * @param array3
+     * @param max2
+     * @throws FileNotFoundException
+     * @throws IOException 
+     */
+
+    public static void fileWrite(int array4 [], int array3[], int max2) throws FileNotFoundException, IOException {
+        FileWriter append_file = new FileWriter("numberList_test01.txt", true);
+        PrintWriter write_file = new PrintWriter(append_file);
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("[ ");
+        for (int i = 0; i < array4.length; i++) {
+            if (i == array3.length - 1) {
+                sb.append(i + ":");
+                sb.append(array4[i] + " ");
+            } else {
+                sb.append(i + ":");
+                sb.append(array4[i] + ", ");
+            }
+        }
+        
+        sb.append("]");
+        write_file.println(sb.toString());
+        write_file.println("Maximum value "+ array3[max2]+ " at index " +max2);
+        write_file.close();
+    }
+}
+
+
